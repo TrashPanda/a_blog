@@ -22,24 +22,6 @@ visible to logined user only
 
 
 
-/*home page.
-router.route('/testing')
-  .get(function(req, res) {
-    Post.getAll(null, function (err, posts) {      // call to the post model
-      if (err) {
-        posts = [];
-      }
-      res.render('index', {
-        title: 'TrashPanda and Cats',
-        user: req.session.user,
-        posts: posts,
-        success: req.flash('success').toString(),
-        error: req.flash('error').toString()
-      });
-    });
-  });
-*/
-
 
 //homepage with 10 articles per page
 router.route('/')
@@ -52,7 +34,7 @@ router.route('/')
       posts = [];
     }
     res.render('index', {
-      title: "A min blog",
+      title: "A Blog",
       posts: posts,
       page: page,
       isFirstPage: (page - 1) == 0,                                     //navigation
@@ -175,31 +157,6 @@ router.route('/post')
       res.redirect('/');      //back to main
     });
   });
-
-
-/**one user's all posting
-router.route('/u/:name/testing')
-  .get(function(req, res){
-    User.get(req.params.name, function (err, user) {
-      //check the user's existance using key name from User model
-      if (!user) {
-        req.flash('error', 'The user does not exist!');
-        return res.redirect('/');
-      }
-      //query all the article from this user from Post model
-      Post.getAll(user.name, function (err, posts) {
-        errorRedirect(err, 'url');
-        res.render('user', {
-          title: user.name,
-          posts: posts,
-          user : req.session.user,
-          success : req.flash('success').toString(),
-          error : req.flash('error').toString()
-        });
-      });
-    });
-  });
-  **/
 
 
 

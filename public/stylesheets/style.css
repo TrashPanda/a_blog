@@ -92,7 +92,7 @@ a {
 
 .edit:hover{
   text-decoration:none;
-  background-color:#f00;
+  background-color:#2da6f0;
   color:#fff;
   -webkit-transition:color .2s linear;
   transition:color .2s linear;

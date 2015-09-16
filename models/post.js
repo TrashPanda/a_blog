@@ -1,11 +1,11 @@
-var mongodb = require('./db');
+var mongodb = require('mongodb').Db;
 var ObjectID = require('mongodb').ObjectID;
+var settings = require('../settings');
 
 
 
 
 //the Post class,
-//2 methods .save, .get
 function Post(name, title, post) {
   this.name = name;
   this.title = title;
@@ -14,9 +14,8 @@ function Post(name, title, post) {
 
 
 //Post.save to save the ariticle
-Post.prototype.save = function(callback) {
+Post.save = function(callback) {
   var date = new Date();
-  //save multiple format, just in case
   var time = {
       date: date,
       year : date.getFullYear(),
@@ -32,19 +31,19 @@ Post.prototype.save = function(callback) {
       post: this.post
   };
   //open the db
-  mongodb.open(function (err, db) {
+  mongodb.connect(settings.url, function (err, db) {
     dbErrorCheck(err, callback);
     //read the posts collection
     db.collection('posts', function (err, collection) {
       if (err) {
-        mongodb.close();
+        db.close();
         return callback(err);
       }
       //insert the post into posts
       collection.insert(post, {                               // THE LINE WHICH SAVES
         safe: true
       }, function (err) {
-        mongodb.close();
+        db.close();
         dbErrorCheck(err, callback);
         callback(null);//otherwise err will be null
       });
@@ -52,48 +51,24 @@ Post.prototype.save = function(callback) {
   });
 };
 
-//Post.getAll to get the a series of articles, be all or from one user
-Post.getAll = function(name, callback) {
-  //open db
-  mongodb.open(function (err, db) {
-    dbErrorCheck(err, callback);
-    //read posts collection
-    db.collection('posts', function(err, collection) {
-      if (err) {
-        mongodb.close();
-        return callback(err);
-      }
-      var query = {};
-      if (name) {                   //if there is a name passed as param, then use name as key to query
-        query.name = name;
-      }
-      //use query to find post, here query is the cursor of db, if query = {}, return all. if query = {name: name}, we have the key to search
-      collection.find(query).sort({
-        time: -1
-      }).toArray(function (err, docs) {
-        mongodb.close();
-        dbErrorCheck(err, callback);
-        callback(null, docs);//if succcessfull, return the document
-      });
-    });
-  });
-};
+
+
 
 //to get 10 posts per pages
 Post.getTen = function(name, page, callback) {
-
-  mongodb.open(function (err, db) {
+  mongodb.connect(settings.url, function (err, db) {
+  //mongodb.open(function (err, db) {
     dbErrorCheck(err, callback);
     db.collection('posts', function (err, collection) {
       //posts error checking
       if (err) {
-        mongodb.close();
+        db.close();
         return callback(err);
       }
       var query = {};
       if (name) {
         query.name = name;
-      }      
+      }
       collection.count(query, function (err, total) {
         // skip (page-1)*10 results and display 10 results at page page.
         collection.find(query, {
@@ -102,7 +77,7 @@ Post.getTen = function(name, page, callback) {
         }).sort({
           time: -1
         }).toArray(function (err, docs) {
-          mongodb.close();
+          db.close();
           if (err) {
             return callback(err);
           }
@@ -117,19 +92,19 @@ Post.getTen = function(name, page, callback) {
 //retrieve one article
 Post.getOne = function(_id, callback) {
   //open db
-  mongodb.open(function (err, db) {
+  mongodb.connect(settings.url, function (err, db) {
     dbErrorCheck(err, callback);
     //read posts collection
     db.collection('posts', function (err, collection) {
       if (err) {
-        mongodb.close();
+        db.close();
         return callback(err);
       }
       //query through _id
       collection.findOne({
         "_id": new ObjectID(_id)
       }, function (err, doc) {
-        mongodb.close();
+        db.close();
         dbErrorCheck(err, callback);
         callback(null, doc);  //return the result
       });
@@ -142,13 +117,12 @@ Post.getOne = function(_id, callback) {
 
 //Post.update to update the change of the article
 Post.update = function(_id, title, post, callback) {
-  //open the database
-  mongodb.open(function (err, db) {
+  mongodb.connect(settings.url, function (err, db) {
     dbErrorCheck(err, callback);
     //read posts collections
     db.collection('posts', function (err, collection) {
       if (err) {
-        mongodb.close();
+        db.close();
         return callback(err);
       }
       //update the article
@@ -160,7 +134,7 @@ Post.update = function(_id, title, post, callback) {
           title: title
         }
       }, function (err) {
-        mongodb.close();
+        db.close();
         dbErrorCheck(err, callback);
         callback(null);
       });
@@ -170,13 +144,13 @@ Post.update = function(_id, title, post, callback) {
 
 //Post.remove to remove one article
 Post.remove = function(_id, callback) {
-  //open db
-  mongodb.open(function (err, db) {
+  mongodb.connect(settings.url, function (err, db) {
+
     dbErrorCheck(err, callback);
     //using collection to remove
     db.collection('posts', function (err, collection) {
       if (err) {
-        mongodb.close();
+        db.close();
         return callback(err);
       }
       //remove that article
@@ -185,7 +159,7 @@ Post.remove = function(_id, callback) {
       }, {
         w: 1
       }, function (err) {
-        mongodb.close();
+        db.close();
         dbErrorCheck(err, callback);
         callback(null);
       });

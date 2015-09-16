@@ -34,15 +34,16 @@ app.use(flash());
 //session module setup
 app.use(session({
   secret: settings.cookieSecret,
-  key: settings.db,                                 //cookie name
+  //key: settings.db,                                 //cookie name
   cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},       //cokkie store for 30 days
   resave: false,                                    // has to be set to false usually, check session api doc
   saveUninitialized: false,                         //same as above
-  store: new MongoStore({
-    db: settings.db,
-    host: settings.host,
-    port: settings.port
-  })
+  url: settings.url
+  //store: new MongoStore({
+  //  db: settings.db,
+  //  host: settings.host,
+  //  port: settings.port
+  //})
 }));
 
 
