@@ -16,7 +16,7 @@ function User(user) {
 
 //User.save to store user info
 //1 proerty, .user
-User.save = function(callback) {
+User.prototype.save = function(callback) {
   //the user document to be saved
   var user = {
       name: this.name,

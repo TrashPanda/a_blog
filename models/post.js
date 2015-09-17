@@ -14,7 +14,7 @@ function Post(name, title, post) {
 
 
 //Post.save to save the ariticle
-Post.save = function(callback) {
+Post.prototype.save = function(callback) {
   var date = new Date();
   var time = {
       date: date,
