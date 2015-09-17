@@ -1,6 +1,6 @@
 var express = require('express');             //an instance of the express server
 var path = require('path');                   //..path manipulation
-var favicon = require('serve-favicon');       //..favourite icon midware
+//var favicon = require('serve-favicon');       //..favourite icon midware
 var logger = require('morgan');               //..HTTP request logger
 var cookieParser = require('cookie-parser');  //..parse cookie and req.cookie
 var bodyParser = require('body-parser');      //..parse incoming request
