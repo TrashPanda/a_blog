@@ -25,6 +25,7 @@ visible to logined user only
 
 //homepage with 10 articles per page
 router.route('/')
+  //GET req at /
   .get(function (req, res) {
     //page is at either 1 or page p
     var page = req.query.p ? parseInt(req.query.p) : 1;
@@ -50,6 +51,7 @@ router.route('/')
 /*registration page*/
 router.route('/reg')
   .all(checkNotLogin)       //the user has to be in the not logged-in state to be on this page
+  //GET at /reg
   .get(function(req, res){
     res.render('reg', {
       title: 'Registration',
@@ -58,7 +60,7 @@ router.route('/reg')
       error: req.flash('error').toString()
     });
   })
-  // handling the user registration POST request
+  //POST req at /reg
   .post(function(req, res){
     var name = req.body.name;
     var password = req.body.password;
@@ -80,8 +82,10 @@ router.route('/reg')
     });
     //check if the newUser.name exist if not then call User.save to the db
     User.get(newUser.name, function (err, user) {
-
-      errorRedirect(err,'/');
+      if (err) {
+        req.flash('error', err);
+        return res.redirect(url); //error! goes back to the url
+      }
       //if the user exists routes back to the registration page
       if (user) {
         req.flash('error', 'The user already exists!');
@@ -89,7 +93,10 @@ router.route('/reg')
       }
       //if not add new user data, newUser calls User.save here
       newUser.save(function (err, user) {
-        errorRedirect(err, '/reg');
+        if (err) {
+          req.flash('error', err);
+          return res.redirect(url); //error! goes back to the url
+        }
         req.session.user = user;    //save the user info into session
         req.flash('success', 'Registration successful!');
         res.redirect('/');          //and back to the homepage
@@ -102,6 +109,7 @@ router.route('/reg')
 /*login page, GET POST request*/
 router.route('/login')
   .all(checkNotLogin)      //the user has to be in the not logged-in state to be on this page
+  //GET req at /login
   .get(function(req, res){
     res.render('login', {
       title: 'Login',
@@ -110,20 +118,38 @@ router.route('/login')
       error: req.flash('error').toString()
     });
   })
-
+  //POST req at /login
   .post(function(req, res){
     //password encryption
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('hex');
-
     //check if the user exist
     User.get(req.body.name, function (err, user) {
-      errorRedirect(err, '/');
+      if (err) {
+        req.flash('error', err);
+        return res.redirect(url); //error! goes back to the url
+      }
       //if the user doesn't exist redirect to login page
+      /* The function i want to refactor
       if (!user) {
         req.flash('error', 'The user does not exist!');
         return res.redirect('/login');
       }
+      */
+      var urlRedirect = function(req, res, flag, key, msg, url){
+        if (flag) {
+          req.flash(key, msg);
+          return res.redirect(url);
+        }
+      };
+
+      urlRedirect(req, res, (!user), 'error', 'The user does not exist!', '/login');
+      /*
+      if (!user) {
+        req.flash('error', 'The user does not exist!');
+        return res.redirect('/login');
+      }
+      */
       //if user exist thencheck the password. if wrong, redirect to login page
       if (user.password != password) {
         req.flash('error', 'Nice try! But wrong password!');
@@ -140,6 +166,7 @@ router.route('/login')
 /*posting page*/
 router.route('/post')
   .all(checkLogin)                //has to a logged in user to post
+  //GET req at /post
   .get(function(req, res){
     res.render('post', {
       title: 'Post',
@@ -148,11 +175,15 @@ router.route('/post')
       error: req.flash('error').toString()
     });
   })
+  //POST req at /post
   .post(function(req, res){
     var currentUser = req.session.user;
     var post = new Post(currentUser.name, req.body.title, req.body.post);
     post.save(function (err) {
-      errorRedirect(err, '/');
+      if (err) {
+        req.flash('error', err);
+        return res.redirect(url); //error! goes back to the url
+      }
       req.flash('success', 'Submission successful!');
       res.redirect('/');      //back to main
     });
@@ -162,6 +193,7 @@ router.route('/post')
 
 //one user's page, with 10 posts per page
 router.route('/u/:name')
+  //GET req at /u/:name
   .get(function (req, res) {
     var page = req.query.p ? parseInt(req.query.p) : 1;
     //check the existance of the user
@@ -172,7 +204,10 @@ router.route('/u/:name')
       }
       //call Post.getTen to display 10 posts per page
       Post.getTen(user.name, page, function (err, posts, total) {
-        errorRedirect(err, '/');
+        if (err) {
+          req.flash('error', err);
+          return res.redirect(url); //error! goes back to the url
+        }
         res.render('user', {
           title: user.name,
           posts: posts,
@@ -190,10 +225,14 @@ router.route('/u/:name')
 
 //render one particular posting
 router.route('/p/:_id')
+  //GET req at '/p/:_id'
   .get(function(req, res){
     //retrieve one article from Post model
     Post.getOne(req.params._id, function (err, post) {
-      errorRedirect(err, '/');
+      if (err) {
+        req.flash('error', err);
+        return res.redirect(url); //error! goes back to the url
+      }
       res.render('article', {
         title: post.title,
         post: post,
@@ -207,10 +246,14 @@ router.route('/p/:_id')
 //retrieve one page and provide edit function
 router.route('/edit/p/:_id')
   .all(checkLogin)
+  //GET req at /edit/p/:_id
   .get(function(req, res){
     var currentUser = req.session.user;
     Post.getOne(req.params._id, function (err, post) {
-      errorRedirect(err, 'back');
+      if (err) {
+        req.flash('error', err);
+        return res.redirect(url); //error! goes back to the url
+      }
       res.render('edit', {
         title: 'Edit',
         post: post,
@@ -220,11 +263,15 @@ router.route('/edit/p/:_id')
       });
     });
   })
+  //POST
   .post(function(req, res){
     var currentUser = req.session.user;
     Post.update(req.params._id, req.body.title, req.body.post, function (err) {
       var url = encodeURI('/p/' + req.params._id);
-      errorRedirect(err, url);
+      if (err) {
+        req.flash('error', err);
+        return res.redirect(url); //error! goes back to the url
+      }
       req.flash('success', 'Edit successful!');
       res.redirect(url);  //back to the url
     });
@@ -232,10 +279,14 @@ router.route('/edit/p/:_id')
 
 router.route('/remove/p/:_id')
   .all(checkLogin)
+  //GET
   .get(function(req, res){
     var currentUser = req.session.user;
     Post.remove(req.params._id, function (err) {
-      errorRedirect(err, 'back');
+      if (err) {
+        req.flash('error', err);
+        return res.redirect(url); //error! goes back to the url
+      }
       req.flash('success', 'Delete successful!');
       res.redirect('/');
     });
@@ -244,39 +295,16 @@ router.route('/remove/p/:_id')
 /*logout page*/
 router.route('/logout')
   .all(checkLogin)              //has to a logged in user to log out
+  //GET req at /logout
   .get(function(req, res){
     req.session.user = null;    //set the current session user to null
     req.flash('success', 'Log out successful!');
     res.redirect('/');          //back to the homepage
-
   })
 
 
-
-
-
-
-
-
-//testing, attention plz
-router.route('/food')
-  .get(function(req,res){          //testing, delete later
-    res.send('Ayy lmao');
-  });
-
-
-
-
-//if encounter error, redirect to url
-function errorRedirect(err, url ){
-  if (err) {
-    req.flash('error', err);
-    return res.redirect(url); //error! goes back to the url
-  }
-};
-
 //check user state
-// the page requires logged in user
+// the page requires logged-in user
 function checkLogin(req, res, next) {
   if (!req.session.user) {
     req.flash('error', 'Please login first!');
@@ -285,7 +313,7 @@ function checkLogin(req, res, next) {
   next();
 };
 
-//the pages requires not logged in user, eg, login, registration page
+//the pages requires not-logged-in user, eg, /login, /reg
 function checkNotLogin(req, res, next) {
   if (req.session.user) {
     req.flash('error', 'Already logged in!');

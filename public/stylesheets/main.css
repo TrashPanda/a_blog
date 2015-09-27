@@ -1,0 +1,85 @@
+/* line 4, stdin */
+* {
+  padding: 0;
+  margin: 0; }
+
+/* line 9, stdin */
+body {
+  font-family: Baskerville, Constantia, Palatino, "Times New Roman";
+  width: 600px;
+  margin: 2em auto;
+  padding: 0 2em;
+  font-size: 14px; }
+  /* line 16, stdin */
+  body header {
+    padding: .5em 0;
+    border-bottom: 1px solid #cccccc; }
+    /* line 20, stdin */
+    body header h1 {
+      font-weight: 300;
+      font-size: 40px; }
+  /* line 27, stdin */
+  body nav {
+    float: left;
+    font-family: Baskerville, Constantia, Palatino, "Times New Roman";
+    font-size: 1.3em;
+    text-transform: uppercase;
+    margin-left: -12em;
+    width: 9em;
+    text-align: right; }
+    /* line 36, stdin */
+    body nav a {
+      display: block;
+      text-decoration: none;
+      padding: 0.7em 1em;
+      color: #000000; }
+      /* line 42, stdin */
+      body nav a:hover {
+        background-color: #2da6f0;
+        color: #f9f9f9;
+        transition: color 0.2s linear;
+        -webkit-border-radius: color 0.2s linear;
+        -moz-border-radius: color 0.2s linear;
+        -ms-border-radius: color 0.2s linear; }
+  /* line 50, stdin */
+  body article {
+    font-size: 16px;
+    padding-top: .5em; }
+    /* line 54, stdin */
+    body article p {
+      line-height: 24px;
+      margin: 1em 0; }
+    /* line 59, stdin */
+    body article a {
+      color: #2da6f0;
+      text-decoration: none; }
+      /* line 63, stdin */
+      body article a:hover {
+        color: #2c75d1;
+        text-decoration: underline; }
+
+/* line 72, stdin */
+.info {
+  font-size: 14px; }
+
+/* line 77, stdin */
+.edit {
+  margin: 3px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background-color: #f3f3f3;
+  color: #333333;
+  font-size: 13px; }
+  /* line 85, stdin */
+  .edit:hover {
+    text-decoration: none;
+    background-color: #2da6f0;
+    color: #f3f3f3;
+    transition: color 0.2s linear;
+    -webkit-border-radius: color 0.2s linear;
+    -moz-border-radius: color 0.2s linear;
+    -ms-border-radius: color 0.2s linear; }
+
+/* line 94, stdin */
+.body {
+  background-color: #f9f9f9; }
