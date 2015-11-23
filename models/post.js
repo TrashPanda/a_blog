@@ -32,7 +32,10 @@ Post.prototype.save = function(callback) {
   };
   //open the db
   mongodb.connect(settings.url, function (err, db) {
-    dbErrorCheck(err, callback);
+    //check db error
+    if (err) {
+      return callback(err);
+    }
     //read the posts collection
     db.collection('posts', function (err, collection) {
       if (err) {
@@ -44,7 +47,9 @@ Post.prototype.save = function(callback) {
         safe: true
       }, function (err) {
         db.close();
-        dbErrorCheck(err, callback);
+        if (err) {
+          return callback(err);
+        }
         callback(null);//otherwise err will be null
       });
     });
@@ -52,13 +57,48 @@ Post.prototype.save = function(callback) {
 };
 
 
-
-
-//to get 10 posts per pages
-Post.getTen = function(name, page, callback) {
+//Get all articles from all users or 1 user
+//callback(err, posts)
+Post.getAll = function(name, callback) {
+  //db operation
   mongodb.connect(settings.url, function (err, db) {
   //mongodb.open(function (err, db) {
-    dbErrorCheck(err, callback);
+    if (err) {
+      return callback(err);
+    }
+    //retrieve articles from collections
+    db.collection('posts', function(err, collection) {
+      if (err) {
+        db.close();
+        return callback(err);
+      }
+      //if user's name present, set query as user's name
+      var query = {};
+      if (name) {
+        query.name = name;
+      }
+      //find the posts from collection
+      collection.find(query).sort({
+        time: -1
+      }).toArray(function (err, docs) {
+        db.close();
+        if (err) {
+          return callback(err);
+        }
+        callback(null, docs); //return the articles to the callback function
+      });
+    });
+  });
+};
+
+//to get 10 articles per pages
+Post.getTen = function(name, page, callback) {
+  mongodb.connect(settings.url, function (err, db) {
+    //check db error
+    if (err) {
+      return callback(err);
+    }
+    //db operation
     db.collection('posts', function (err, collection) {
       //posts error checking
       if (err) {
@@ -93,7 +133,9 @@ Post.getTen = function(name, page, callback) {
 Post.getOne = function(_id, callback) {
   //open db
   mongodb.connect(settings.url, function (err, db) {
-    dbErrorCheck(err, callback);
+    if (err) {
+      return callback(err);
+    }
     //read posts collection
     db.collection('posts', function (err, collection) {
       if (err) {
@@ -105,7 +147,9 @@ Post.getOne = function(_id, callback) {
         "_id": new ObjectID(_id)
       }, function (err, doc) {
         db.close();
-        dbErrorCheck(err, callback);
+        if (err) {
+          return callback(err);
+        }
         callback(null, doc);  //return the result
       });
     });
@@ -118,7 +162,10 @@ Post.getOne = function(_id, callback) {
 //Post.update to update the change of the article
 Post.update = function(_id, title, post, callback) {
   mongodb.connect(settings.url, function (err, db) {
-    dbErrorCheck(err, callback);
+    //check db error
+    if (err) {
+      return callback(err);
+    }
     //read posts collections
     db.collection('posts', function (err, collection) {
       if (err) {
@@ -135,7 +182,9 @@ Post.update = function(_id, title, post, callback) {
         }
       }, function (err) {
         db.close();
-        dbErrorCheck(err, callback);
+        if (err) {
+          return callback(err);
+        }
         callback(null);
       });
     });
@@ -145,8 +194,10 @@ Post.update = function(_id, title, post, callback) {
 //Post.remove to remove one article
 Post.remove = function(_id, callback) {
   mongodb.connect(settings.url, function (err, db) {
-
-    dbErrorCheck(err, callback);
+    //check db error
+    if (err) {
+      return callback(err);
+    }
     //using collection to remove
     db.collection('posts', function (err, collection) {
       if (err) {
@@ -160,7 +211,9 @@ Post.remove = function(_id, callback) {
         w: 1
       }, function (err) {
         db.close();
-        dbErrorCheck(err, callback);
+        if (err) {
+          return callback(err);
+        }
         callback(null);
       });
     });

@@ -1,14 +1,33 @@
+
 <%- include segment/header %>
+
+<div class="container">
 <p>
   <% if (user && (user.name == post.name)) { %>
-    <span><a class="edit" href="/edit/p/<%= post._id%>">Edit</a></span>
-    <span><a class="edit" href="/remove/p/<%= post._id%>">Delete</a></span>
+    <div class="btn-toolbar">
+
+      <a class="btn btn-default edit" href="/edit/p/<%= post._id%>">
+        <span class="glyphicon glyphicon-edit"></span>
+        Edit
+      </a>
+
+      <a class="btn btn-default edit" href="/remove/p/<%= post._id%>">
+        <span class="glyphicon glyphicon-remove"></span>
+        Delete
+      </a>
+
+    </div>
   <% } %>
 </p>
+</div>
 
+<div class="container">
 <p class="info">
   Author: <a href="/u/<%= post.name %>"><%= post.name %></a> |
   Date: <%= post.time.minute %>
 </p>
+
 <p class="body"><%- post.post %></p>
+</div>
+
 <%- include segment/footer %>

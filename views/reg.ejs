@@ -1,13 +1,31 @@
 <%- include segment/header %>
-<form method="post">
-  Username:<br>
-  <input type="text" name="name"  required/><br><br>
-  Password:<br>
-  <input type="password" name="password"  required/><br><br>
-  Repeat password:<br>
-  <input type="password" name="password-repeat"  required/><br><br>
-  Email:<br>
-  <input type="email" name="email" required/><br><br>
-  <input type="submit" value="Register"/>
-</form>
+<div class="container">
+  <div class="row">
+    <form method="post" class="col-md-4 col-md-offset-4">
+
+      <div class="form-group">
+        <input class="form-control" type="text" name="name" placeholder="Enter your username" required/>
+      </div>
+
+
+      <div class="form-group">
+        <input class="form-control" type="password" name="password" placeholder="Enter your assword" required/>
+      </div>
+
+
+      <div class="form-group">
+        <input class="form-control" type="password" name="password-repeat" placeholder="Confirm your Password" required/>
+      </div>
+
+
+      <div class="form-group">
+        <input class="form-control" type="email" name="email" placeholder="Enter your email" required/>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+    </form>
+  </div>
+</div>
 <%- include segment/footer %>

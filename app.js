@@ -8,7 +8,10 @@ var session = require('express-session');     //..session support
 var MongoStore = require('connect-mongo')(session);   //..session support with mongodb
 var flash = require('connect-flash');         //..special area in session for storing messages
 
-var routes = require('./routes/index');           //loads the index file under routes
+
+var routes = require('./routes/index');           //load the index file under routes
+var blogapi = require('./routes/blogapi');
+
 // we might put all routes in index and wrap it
 // var users = require('./routes/users');
 var settings = require('./settings');             //..db settings
@@ -47,7 +50,7 @@ app.use(session({
   //})
 }));
 
-
+app.use('/api', blogapi);     //mount blog api
 app.use('/', routes);         // mount route file to the path /
 // we minght not actually use it  user.js, commentify first
 //app.use('/users', users);     // ..at /users

@@ -25,7 +25,9 @@ User.prototype.save = function(callback) {
   };
   //open the db
   mongodb.connect(settings.url, function (err, db) {
-    dbErrorCheck(err, callback);
+    if (err) {
+      return callback(err);
+    }
     //read the user collection
     db.collection('users', function (err, collection) {
       if (err) {
@@ -35,7 +37,9 @@ User.prototype.save = function(callback) {
       //insert user data into users collection
       collection.insert(user, { safe: true }, function (err, user) {
         db.close();
-        dbErrorCheck(err, callback);
+        if (err) {
+          return callback(err);
+        }
         callback(null, user[0]); //if success,err is passed as null and return the saved user document
       });
     });
@@ -45,7 +49,9 @@ User.prototype.save = function(callback) {
 //User.get to inquire the user info
 User.get = function(name, callback) {
   mongodb.connect(settings.url, function (err, db) {
-    dbErrorCheck(err, callback);
+    if (err) {
+      return callback(err);
+    }
     //read users collection
     db.collection('users', function (err, collection) {
       if (err) {
@@ -57,7 +63,9 @@ User.get = function(name, callback) {
         name: name
       }, function (err, user) {
         db.close();
-        dbErrorCheck(err, callback);
+        if (err) {
+          return callback(err);
+        }
         callback(null, user);//success, return the inquired user info
       });
     });
