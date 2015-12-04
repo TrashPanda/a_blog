@@ -1,16 +1,22 @@
 <%- include segment/header %>
 <% posts.forEach(function (post, index) { %>
   <div class="container">
-    <p><h2><a href="/p/<%= post._id %>"><%= post.title %></a></h2></p>
-    <p class="info">
-      Author: <a href="/u/<%= post.name %>"><%= post.name %></a> |
-      Date: <%= post.time.minute %>
-    </p>
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2">
 
-    <p><%- post.post %></p>
-    <hr>
-    
+        <p><h2><a href="/p/<%= post._id %>"><%= post.title %></a></h2></p>
+        <p class="info">
+          Author: <a href="/u/<%= post.name %>"><%= post.name %></a> |
+          Date: <%= post.time.minute %>
+        </p>
+
+        <p><%- post.post %></p>
+        <hr>
+        
+      </div>
+    </div>
   </div>
+
 <% }) %>
 <%- include segment/page %>
 <%- include segment/footer %>
