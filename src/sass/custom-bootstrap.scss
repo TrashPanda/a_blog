@@ -1,0 +1,35 @@
+@import "custom-variables";
+
+body{
+  @include serif;
+  font-size: 20px;
+  color: $gray-dark;
+
+  a{
+    color: $gray-dark;
+
+    &:focus,
+    &:hover{
+      color: $blue-tint;
+      text-decoration: none;
+    }
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	@include sans-serif;
+	font-weight: 800;
+}
+
+.post-meta {
+  color: $gray;
+	font-size: 18px;
+	font-style: italic;
+	margin-top: 0;
+
+}

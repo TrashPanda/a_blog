@@ -1,0 +1,12 @@
+$gray: lighten(black, 50%);
+$gray-light: #eee;
+$gray-dark: lighten(black, 25%);
+$blue-tint: #0085A1;
+
+@mixin serif(){
+  font-family: 'Lora', 'Times New Roman', serif;
+}
+
+@mixin sans-serif(){
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
