@@ -16,9 +16,16 @@ var env = process.env.NODE_ENV || 'development';    //'development' mode if not 
 
 //'sass' action to complie css file
 gulp.task('sass', function(){
+  /*
   return gulp.src('./src/sass/main.scss')
     .pipe(sass({sourceComments: 'map'}))
     .pipe(gulp.dest('./public/stylesheets'));
+  */
+  
+  return gulp.src('./src/sass/custom-bootstrap.scss')
+    .pipe(sass({sourceComments: 'map'}))
+    .pipe(gulp.dest('./public/stylesheets'));
+
 });
 
 
