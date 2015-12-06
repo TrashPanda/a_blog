@@ -3,7 +3,8 @@ var ObjectID = require('mongodb').ObjectID;
 var settings = require('../settings');
 
 
-
+//CRUD api
+//the CRUD operations can be done by calling the functions from mongoDB api
 
 //the Post class,
 function Post(name, title, post) {
@@ -13,7 +14,9 @@ function Post(name, title, post) {
 }
 
 
-//Post.save to save the ariticle
+//Post.prototype.save to save the ariticle
+//this is the class method, where when a instance of post object is created,
+// and it will be saved
 Post.prototype.save = function(callback) {
   var date = new Date();
   var time = {

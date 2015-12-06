@@ -1,8 +1,7 @@
 <%- include segment/header %>
 <% posts.forEach(function (post, index) { %>
   <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2">
+      <div class="col-lg-10 col-lg-offset-1">
 
         <p><h2><a href="/p/<%= post._id %>"><%= post.title %></a></h2></p>
         <p class="info">
@@ -12,9 +11,8 @@
 
         <p><%- post.post %></p>
         <hr>
-        
+
       </div>
-    </div>
   </div>
 
 <% }) %>

@@ -57,15 +57,19 @@
 
     <article>
     <div class="container">
-      <% if (success) { %>
-      <div class="alert alert-success">
-        <%= success %>
-      </div>
+      <div class="col-lg-10 col-lg-offset-1">
 
-      <% } %>
-      <% if (error) { %>
-      <div div class="alert alert-warning">
-        <%= error %>
+        <% if (success) { %>
+        <div class="alert alert-success">
+          <%= success %>
+        </div>
+
+        <% } %>
+        <% if (error) { %>
+        <div div class="alert alert-warning">
+          <%= error %>
+        </div>
+        <% } %>
+        
       </div>
-      <% } %>
     </div>

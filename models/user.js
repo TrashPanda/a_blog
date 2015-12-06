@@ -3,6 +3,9 @@
 var mongodb = require('mongodb').Db;
 var settings = require('../settings');
 
+//CRUD api
+//the CRUD operations can be done by calling the functions from mongoDB api
+
 
 //a User class
 function User(user) {
@@ -11,6 +14,8 @@ function User(user) {
   this.email = user.email;
 };
 
+// the static/object methods are used directly to perform RUD operations
+// .save is a class method. To perform a C operation, an instance of the class needs to be created then .save can be called
 
 
 
