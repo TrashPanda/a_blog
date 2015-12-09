@@ -49,17 +49,19 @@ router.route('/')
   //GET req at /
   .get(function (req, res) {
     //page is at either 1 or page p
-    var page = req.query.p ? parseInt(req.query.p) : 1;
+    var page = parseInt(req.query.p) || 1;
     //return the 10 results from page p
     Post.getTen(null, page, function (err, posts, total) {
       if (err) {
         posts = [];
       }
+
+      //render the index page
       res.render('index', {
         title: "TrashPanda's Coding den",
         posts: posts,
         page: page,
-        isFirstPage: (page - 1) == 0,                                     //navigation
+        isFirstPage: (page - 1) == 0,                                     //navigation handling
         isLastPage: ((page - 1) * 10 + posts.length) == total,
         user: req.session.user,
         success: req.flash('success').toString(),
@@ -236,11 +238,24 @@ router.route('/p/:_id')
         error: req.flash('error').toString()
       });
     });
+  })
+  //PUT request
+  .put(checkLogin)                    //check the login state, it has to be a logged-in user to send PUT request
+  .put(function(req, res){
+
+  })
+  //DELETE request
+  .put(checkLogin)                    //check the login state, it has to be a logged-in user to send DELETE request
+  .delete(function(req, res){
+
   });
+
+
+
 
 //retrieve one page and provide edit function
 router.route('/edit/p/:_id')
-  .all(checkLogin)
+  .all(checkLogin)                                        //check the login state, it has to be a logged-in user
   //GET req at /edit/p/:_id
   .get(function(req, res){
     var currentUser = req.session.user;
@@ -271,6 +286,8 @@ router.route('/edit/p/:_id')
     });
   });
 
+
+
 router.route('/remove/p/:_id')
   .all(checkLogin)
   //GET
@@ -283,6 +300,11 @@ router.route('/remove/p/:_id')
       urlRedirect(req, res, 'success', 'Delete successful!', '/');  //delete successful
     });
   })
+
+
+
+
+
 
 /*logout page*/
 router.route('/logout')

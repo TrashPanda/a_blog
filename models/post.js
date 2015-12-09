@@ -14,9 +14,12 @@ function Post(name, title, post) {
 }
 
 
+
+// the static/object methods are used directly to perform RUD operations
+// .save is a class method. To perform a C operation, an instance of the class needs to be created then .save can be called
+
+
 //Post.prototype.save to save the ariticle
-//this is the class method, where when a instance of post object is created,
-// and it will be saved
 Post.prototype.save = function(callback) {
   var date = new Date();
   var time = {
@@ -61,7 +64,8 @@ Post.prototype.save = function(callback) {
 
 
 //Get all articles from all users or 1 user
-//callback(err, posts)
+//name: user's name
+//callback with retrieved documents is invoked at the end
 Post.getAll = function(name, callback) {
   //db operation
   mongodb.connect(settings.url, function (err, db) {
@@ -94,7 +98,13 @@ Post.getAll = function(name, callback) {
   });
 };
 
+
+
 //to get 10 articles per pages
+//Note: get 6 for current state, 10 is too big for now
+// name: inquried user's name
+// page: the current page
+//callback with retrieved documents and the total count is invoked at the end
 Post.getTen = function(name, page, callback) {
   mongodb.connect(settings.url, function (err, db) {
     //check db error
@@ -108,23 +118,29 @@ Post.getTen = function(name, page, callback) {
         db.close();
         return callback(err);
       }
+      //query object to be passed to in collection.count()
       var query = {};
+
+      // if name is passed(indicating user name), let query have name property
       if (name) {
         query.name = name;
       }
-      collection.count(query, function (err, total) {
-        // skip (page-1)*10 results and display 10 results at page page.
+
+      // the count function counts the number of matches according to query,
+      //in this case the query is .name (optional) as above
+      // the count result has to be returned actively, here we use a call back to return both the counts and the number of document
+      collection.count(query, function (err, count) {
         collection.find(query, {
-          skip: (page - 1)*10,
-          limit: 10
-        }).sort({
+          skip: (page - 1)*10,                      // skip (page-1)*10 results
+          limit: 10                                 // limit the documents returned to 10
+        }).sort({                                   // sort by inverse
           time: -1
         }).toArray(function (err, docs) {
           db.close();
           if (err) {
             return callback(err);
           }
-          callback(null, docs, total);
+          callback(null, docs, count);              // pass back the documents, and the total of them
         });
       });
     });
