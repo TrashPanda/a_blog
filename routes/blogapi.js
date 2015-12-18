@@ -34,7 +34,7 @@ router.route('/post')
       if (err) {
         res.send(err);
       }
-      //responds with all posts
+      //responds with all posts in JSON data
       res.json(posts);
     });
   })
@@ -65,29 +65,7 @@ router.route('/post/u/:name')
 
 
 
-//GET/PUT/DELETE get/update/retrieve an particle id:id
-router.route('/post/:_id')
-  //GET to get
-  .get(function(req, res){
-    Post.getOne(req.params._id, function(err, post){
-      //deal with error
-      if (err) {
-        res.send(err);
-      }
-      //respond with post with id:_id
-      res.json(post);
-    });
-  })
-  //WARNING not complete
-  .all(checkLogin)          // user update, has to be in logged-in state
-  //PUT to update
-  .put(function(req, res){
 
-  })
-  //DELETE to delete
-  .delete(function(req, res){
-
-  });
 
 
 

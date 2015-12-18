@@ -10,7 +10,7 @@ var flash = require('connect-flash');         //..special area in session for st
 
 
 var routes = require('./routes/index');           //load the index file under routes
-var blogapi = require('./routes/blogapi');
+//var blogapi = require('./routes/blogapi');      //blog api testing
 
 // we might put all routes in index and wrap it
 // var users = require('./routes/users');
@@ -50,7 +50,7 @@ app.use(session({
   //})
 }));
 
-app.use('/api', blogapi);     //mount blog api
+//app.use('/api', blogapi);     //mount blog api
 app.use('/', routes);         // mount route file to the path /
 // we minght not actually use it  user.js, commentify first
 //app.use('/users', users);     // ..at /users

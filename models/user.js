@@ -15,7 +15,7 @@ function User(user) {
 };
 
 // the static/object methods are used directly to perform RUD operations
-// .save is a class method. To perform a C operation, an instance of the class needs to be created then .save can be called
+// .save is a class method. To perform a CREATE operation, an instance of the class needs to be created then .save can be called
 
 
 
@@ -37,7 +37,7 @@ User.prototype.save = function(callback) {
     db.collection('users', function (err, collection) {
       if (err) {
         db.close();
-        return callback(err); //if there is a error return err message
+        return callback(err);         //if there is a error return err message
       }
       //insert user data into users collection
       collection.insert(user, { safe: true }, function (err, user) {
@@ -45,11 +45,14 @@ User.prototype.save = function(callback) {
         if (err) {
           return callback(err);
         }
-        callback(null, user[0]); //if success,err is passed as null and return the saved user document
+        //if success, callback() is invoked with null as error message, and saved user is passed back to be used in session
+        callback(null, user[0]);            //since in collection.insert(arg,callback), arg can be batched. We only insert one user here, use user[0] to indicate the saved user
       });
     });
   });
 };
+
+
 
 //User.get to inquire the user info
 User.get = function(name, callback) {
@@ -64,9 +67,7 @@ User.get = function(name, callback) {
         return callback(err); //if there is a error return err message
       }
       //user info inquery, in the key=name
-      collection.findOne({
-        name: name
-      }, function (err, user) {
+      collection.findOne({ name: name }, function (err, user) {
         db.close();
         if (err) {
           return callback(err);

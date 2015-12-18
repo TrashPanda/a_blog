@@ -6,7 +6,10 @@ var settings = require('../settings');
 //CRUD api
 //the CRUD operations can be done by calling the functions from mongoDB api
 
-//the Post class,
+//the Post class, 3 properties to be saved
+//name: name of the user who wrote the post
+//title: title of the post
+//post: body of the post
 function Post(name, title, post) {
   this.name = name;
   this.title = title;
@@ -21,7 +24,7 @@ function Post(name, title, post) {
 
 //Post.prototype.save to save the ariticle
 Post.prototype.save = function(callback) {
-  var date = new Date();
+  var date = new Date();                    //instantiate a Date object to define various time stamp for the usage
   var time = {
       date: date,
       year : date.getFullYear(),
@@ -29,14 +32,15 @@ Post.prototype.save = function(callback) {
       day : date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
       minute : date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
   };
-  //document to save into the db,
+  //document to be saved into the db,
   var post = {
       name: this.name,
       time: time,
       title: this.title,
       post: this.post
   };
-  //open the db
+  //open the db and save the document to the db
+  //settings.url: db destination
   mongodb.connect(settings.url, function (err, db) {
     //check db error
     if (err) {
@@ -49,14 +53,13 @@ Post.prototype.save = function(callback) {
         return callback(err);
       }
       //insert the post into posts
-      collection.insert(post, {                               // THE LINE WHICH SAVES
-        safe: true
-      }, function (err) {
+      // the collection.insert() function from db saves it to db
+      collection.insert(post, { safe: true }, function (err) {
         db.close();
         if (err) {
-          return callback(err);
+          return callback(err);                               //if there is an error, callback() function is invoked and returned at this point with err
         }
-        callback(null);//otherwise err will be null
+        callback(null);                                       //otherwise callback() is invoked with null passed
       });
     });
   });
@@ -65,7 +68,7 @@ Post.prototype.save = function(callback) {
 
 //Get all articles from all users or 1 user
 //name: user's name
-//callback with retrieved documents is invoked at the end
+//callback(): which has retrieved documents is invoked at the end
 Post.getAll = function(name, callback) {
   //db operation
   mongodb.connect(settings.url, function (err, db) {
@@ -92,7 +95,7 @@ Post.getAll = function(name, callback) {
         if (err) {
           return callback(err);
         }
-        callback(null, docs); //return the articles to the callback function
+        callback(null, docs);   //return the articles to the callback function
       });
     });
   });
@@ -104,7 +107,7 @@ Post.getAll = function(name, callback) {
 //Note: get 6 for current state, 10 is too big for now
 // name: inquried user's name
 // page: the current page
-//callback with retrieved documents and the total count is invoked at the end
+//callback(): which has retrieved documents and the total count is invoked at the end
 Post.getTen = function(name, page, callback) {
   mongodb.connect(settings.url, function (err, db) {
     //check db error

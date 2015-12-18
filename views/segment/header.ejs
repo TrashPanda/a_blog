@@ -25,6 +25,7 @@
           <ul class = "nav navbar-nav navbar-right">
             <% if (user) { %>
             <li role ="presentation"><a href="/post">New Post</a></li>
+            <li role ="presentation"><a href="/forbackbone">New Backbone Post</a></li>
             <li role ="presentation"><a href="/logout">Log Out</a></li>
             <% } else { %>
             <li role ="presentation"><a href="/login">Login</a></li>
@@ -72,4 +73,8 @@
         <% } %>
 
       </div>
+    </div>
+
+    <div class="container" id="testing">
+      <p>loading</p>
     </div>
