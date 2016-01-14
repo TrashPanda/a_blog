@@ -19,7 +19,7 @@ function User(user) {
 
 
 
-//User.save to store user info
+//User.save() to store user info
 //1 proerty, .user
 User.prototype.save = function(callback) {
   //the user document to be saved

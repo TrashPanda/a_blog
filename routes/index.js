@@ -48,10 +48,11 @@ router.route('/')
 router.route('/')
   //GET req at /
   .get(function (req, res) {
-    //page is at either 1 or page p
+    //check the page number p from parsing the url /?p= , we are at page p
+    //if p is not present, 1 is returned; if p is present, p is returned
     var page = parseInt(req.query.p) || 1;
     //return the 10 results from page p
-    Post.getTen(null, page, function (err, posts, total) {
+    Post.getSome(null, 10, page, function (err, posts, total) {
       if (err) {
         posts = [];
       }
@@ -199,6 +200,7 @@ router.route('/post')
 router.route('/u/:name')
   //GET req at /u/:name
   .get(function (req, res) {
+    //fetch page from url /?p=
     var page = parseInt(req.query.p) || 1;
     //check the existance of the user
     User.get(req.params.name, function (err, user) {
@@ -206,7 +208,7 @@ router.route('/u/:name')
         return urlRedirect(req, res, 'error',  'The user does not exist!', '/');
       }
       //call Post.getTen to display 10 posts per page
-      Post.getTen(user.name, page, function (err, posts, total) {
+      Post.getSome(user.name, 10, page, function (err, posts, total) {
         if (err) {
           return urlRedirect(req, res, 'error', err, '/');  //error! goes back to the url
         }
@@ -312,14 +314,17 @@ router.route('/logout')
 
 
 
+
+
+
 /************
 RESTful api for clientside to use
-/api/posts         : empty;  GET all articles
-/api/posts         : JSON;   POST create an article
-/api/posts/u/:name : empty;  GET all articles from user:name
-/api/posts/:id     : empty;  GET an article from id:id
-/api/posts/:id     : JSON;   PUT update
-/api/posts/:id     : empty;  DELETE an article
+/api/posts         :    GET all articles
+/api/posts         :    POST create an article
+/api/posts/u/:name :    GET all articles from user:name
+/api/posts/:id     :    GET an article from id:id
+/api/posts/:id     :    PUT update
+/api/posts/:id     :    DELETE an article
 *******/
 
 //testing
@@ -333,6 +338,21 @@ router.route('/test')
 //WARNING: to be tested
 router.route('/api/posts')
   .get(function(req, res){
+    //params to be passed to the db model api
+    var page = parseInt(req.query.p) || 1;    //if p is not present, 1 is returned; if p is present, p is returned
+    var limit = 10;                            //set limit per page to 10
+
+    //return the 10 results from page p
+    Post.getAll(null, function (err, posts, total) {
+      //deal with error
+      if (err) {
+        res.send(err);
+      }
+      //responds with all posts in JSON data
+      res.json(posts);
+    });
+
+    /*
     Post.getAll(null, function(err, posts){
       //deal with error
       if (err) {
@@ -341,6 +361,7 @@ router.route('/api/posts')
       //responds with all posts in JSON data
       res.json(posts);
     });
+    */
   })
   .post(checkLogin)                           //check user status, he has to be logged-in
   .post(function(req, res){

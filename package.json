@@ -19,9 +19,16 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "backbone": "^1.2.3",
     "browserify": "^11.2.0",
     "gulp": "^3.9.0",
+    "gulp-handlebars": "^4.0.0",
     "gulp-sass": "^2.0.4",
+    "handlebars": "^4.0.5",
+    "hbsfy": "^2.4.1",
+    "jquery": "^2.1.4",
+    "stringify": "^3.2.0",
+    "underscore": "^1.8.3",
     "vinyl-source-stream": "^1.1.0"
   }
 }

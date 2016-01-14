@@ -19,7 +19,7 @@ function Post(name, title, post) {
 
 
 // the static/object methods are used directly to perform RUD operations
-// .save is a class method. To perform a C operation, an instance of the class needs to be created then .save can be called
+// Post.prototype.save is a class method. To perform a CREATE operation, an instance of the class needs to be created then .save can be called
 
 
 //Post.prototype.save to save the ariticle
@@ -102,13 +102,15 @@ Post.getAll = function(name, callback) {
 };
 
 
-
+//Server-side pagination. Problem: no total count returned
+//
 //to get 10 articles per pages
 //Note: get 6 for current state, 10 is too big for now
 // name: inquried user's name
-// page: the current page
+// page: the current page number
+// limit: to set the limit of the posts in one page
 //callback(): which has retrieved documents and the total count is invoked at the end
-Post.getTen = function(name, page, callback) {
+Post.getSome = function(name, limit, page, callback) {
   mongodb.connect(settings.url, function (err, db) {
     //check db error
     if (err) {
@@ -134,10 +136,10 @@ Post.getTen = function(name, page, callback) {
       // the count result has to be returned actively, here we use a call back to return both the counts and the number of document
       collection.count(query, function (err, count) {
         collection.find(query, {
-          skip: (page - 1)*10,                      // skip (page-1)*10 results
-          limit: 10                                 // limit the documents returned to 10
-        }).sort({                                   // sort by inverse
-          time: -1
+          skip: (page - 1)*limit,                       // skip (page-1)*10 results and jump to the following
+          limit: limit                                  // the most number of documents to be returned
+        }).sort({
+          time: -1                                      // sort by descending order of time, newest first. note when sort() limit() are used togather,the mongoDB will always sort first then apply limit, it's not the case of placement. In this case the newest document are at the front
         }).toArray(function (err, docs) {
           db.close();
           if (err) {
@@ -195,9 +197,7 @@ Post.update = function(_id, title, post, callback) {
         return callback(err);
       }
       //update the article
-      collection.update({
-        "_id": new ObjectID(_id)
-      }, {
+      collection.update( { "_id": new ObjectID(_id)  }, {
         $set: {
           post: post,
           title: title
@@ -227,11 +227,7 @@ Post.remove = function(_id, callback) {
         return callback(err);
       }
       //remove that article
-      collection.remove({
-        "_id": new ObjectID(_id)
-      }, {
-        w: 1
-      }, function (err) {
+      collection.remove( { "_id": new ObjectID(_id) }, { w: 1 }, function (err) {
         db.close();
         if (err) {
           return callback(err);

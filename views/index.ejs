@@ -1,24 +1,12 @@
 <%- include segment/header %>
-<% posts.forEach(function (post) { %>
-  <div class="container">
-      <div class="col-lg-8 col-lg-offset-2">
-
-        <a href="/p/<%= post._id %>">
-          <p class="post-title"><h2><%= post.title %></h2></p>
-        </a>
-
-        <p class="post-meta">
-          Author: <a href="/u/<%= post.name %>"><%= post.name %></a>
-          Date: <%= post.time.minute %>
-        </p>
+  <div id="backbone_app">
 
 
-        <p class="body"><%- post.post %></p>
-        <hr>
-
-      </div>
   </div>
 
-<% }) %>
-<%- include segment/page %>
+  <div>
+    <p>
+      <a class="backbone" href="https://www.google.com">To Google</a>
+    </p>
+  </div>
 <%- include segment/footer %>
