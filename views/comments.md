@@ -1,4 +1,4 @@
-Since the ejs comments system is not working for now:
+Since the ejs comments system is not working for now(i.e: it sux):
 
 Main page:
 index.ejs

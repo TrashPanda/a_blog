@@ -335,8 +335,8 @@ router.route('/test')
 
 
 //POST an new article
-//WARNING: to be tested
 router.route('/api/posts')
+  //GET request
   .get(function(req, res){
     //params to be passed to the db model api
     var page = parseInt(req.query.p) || 1;    //if p is not present, 1 is returned; if p is present, p is returned
@@ -351,18 +351,8 @@ router.route('/api/posts')
       //responds with all posts in JSON data
       res.json(posts);
     });
-
-    /*
-    Post.getAll(null, function(err, posts){
-      //deal with error
-      if (err) {
-        res.send(err);
-      }
-      //responds with all posts in JSON data
-      res.json(posts);
-    });
-    */
   })
+  //POST request
   .post(checkLogin)                           //check user status, he has to be logged-in
   .post(function(req, res){
     //save the session user info

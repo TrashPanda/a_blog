@@ -8,82 +8,79 @@ var Backbone = require('backbone');
 Backbone.$ = $;                                         //setup dependencies with jquery
 var Handlebars = require('handlebars');                 //compile template in client side
 
-//import custom files
-var PostView = require('../views/postView.js');          //collection-view handles single view
-//var pagination = require('../templates/PostView.hbs');
+//import components
+var PostView        = require('../views/postView.js');          //single post component
+var PaginationView  = require('../views/paginationView.js');    //pagination component
+var CreateView      = require('../views/createView.js');        //post creation component
 
 
 
 // tagging and apending rendered collection is dealt at router
 var PostsView = Backbone.View.extend({
+  el: '#backbone_app',                                            //top el is #backbone_app
+
   initialize: function(){
-    //this.render();            //an echo in console for now
-    //this.listenTo(this.collection, 'reset', this.render);
-    this.listenTo(this.collection, 'setPage', this.render);      //Warning: cascading call pitfall, do not listen to collection change
+    this.listenTo(this.collection, 'setPage', this.index);       //listener to setPage event from posts collection
+    //this.listenTo(this.collection, 'create', this.create);        //listener to create event
   },
 
-  render: function() {
-    this.addAll();
-    this.pagination();
+  /*
+  *views: these are the views, components might be added
+  */
+  //index(): clear the elemnts, render the posts, render pagination
+  index: function() {
+    console.log('index: makesure render once');
+    this.$el.html('');      //clear the previously rendered elements, otherwise the new elements will append after the old ones
+    this.addAll();          //render the posts
+    this.pagination();      //render pagination
   },
 
-  //add one rendered view to the top element
-  addOne: function(post) {
-    var postView = new PostView({model: post});         //instantiate postView with model data
-    this.$el.append(postView.render().el);              //append a view, with rendered element
-
+  //create new post
+  create: function() {
+    console.log('create: makesure render once');
+    this.$el.html('');                        //clear
+    var createView = new CreateView({collection: this.collection});
+    this.$el.append(createView.render().el);
   },
 
-  //render all posts of the current page of the collection
-  addAll: function() {
-    var page = this.collection.state.currentPage;                       //retrieve the currentPage
-    //page = 3;
-    this.collection.setPage(page).forEach(this.addOne, this);            //Note: only forEach works, each only can be invoked on collection itself. setPage() uses slice() which returns an array
+  showOnePost: function(_id) {
+    var post = this.collection.get(_id);
+    console.log(post);
+    this.$el.html('');
+    this.addOne(post);
   },
 
-
-  //add simple pagination button.
-  //for more better component management, use marionette to arrange subviews and component
-  pagination: function() {
-    var pagination = Handlebars.compile(
-      '<div class="container">'+
-        '<div class="col-lg-8 col-lg-offset-2">'+
-          '<nav>'+
-            '<ul class="pager">'+
-              '<li class="previous"><a class="backbone" href="/pagee/{{ prev }}"><span aria-hidden="true">&larr;</span> Older</a></li>'+
-              '<li><a class="backbone" href="/create">create</a></li>'+
-              '<li class="next"><a class="backbone" href="/pagee/{{ next }}">Newer <span aria-hidden="true">&rarr;</span></a></li>'+
-            '</ul>'+
-          '</nav>'+
-        '</div>'+
-      '</div>'
-    );
-
-    this.$el.append(pagination({
-      prev: 1 || (this.collection.state.currentPage-1),
-      next: this.collection.state.lastPage || (this.collection.state.currentPage + 1)
-    }));
-
-  }
-
+  showUserPosts: function(username) {
+    console.log(username);
+  },
 
 
   /*
-  //render posts at of the current page of the collection
-  currentPage: function() {
-    //this.$el.html('');                                //clean the top elemnt
-    var page = this.collection.state.currentPage;                       //retrieve the currentPage
-    page = 3;
-    this.collection.setPage(page).forEach(this.addOne, this);            //Note: only forEach works, each only can be invoked on collection itself. setPage() uses slice() which returns an array
-
-    //pagination
-    this.$el.append('<span>test</span>');
-  },
+  * components, which can be added on views
   */
+  //one post
+  addOne: function(post) {
+    var postView = new PostView({model: post});         //instantiate postView with model data
+    this.$el.append(postView.render().el);              //append a view, with rendered element
+  },
+
+  //all posts from current page
+  addAll: function() {
+    var page = this.collection.state.currentPage;                         //retrieve the currentPage
+    this.collection.setPage(page).forEach(this.addOne, this);             //Note: only forEach works, each only can be invoked on collection itself. setPage() uses slice() which returns an array
+  },
+
+
+  //pagination
+  pagination: function() {
+    var pagination = new PaginationView({collection: this.collection});   //instantiate pagination component
+    this.$el.append(pagination.render().el);                              //append pagination component
+  },
 
 
 
 });
+
 
 //everytime
 module.exports = PostsView;

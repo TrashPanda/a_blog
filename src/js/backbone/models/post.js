@@ -11,7 +11,7 @@ Backbone.$ = $;                         //setup dependencies with jquery
 var Post = Backbone.Model.extend({
   //4 attributes
   defaults:{
-    name: null,                  //name: username
+    name: null,                 //name: username
     title:  null,               //title: post title
     post: null,                 //body: post body
     time: null                  //time: time stamp of the post, note that in this case it's an object with various format of time, it will be parsed
