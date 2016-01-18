@@ -16,7 +16,7 @@ var PostRouter = Backbone.Router.extend({
     'create'      : 'create',           //create new post
     'page/:page'  : 'setPage',          // navigate to the designated page
     'post/:_id'   : 'showOnePost',       //display a single post
-    'user/:username'  : 'showUserPosts'
+    //'user/:username'  : 'showUserPosts'
   },
 
   //initialize the router with collection, instantiate the collection-view, only after successful fetch(), router.start() is passed as callback to kickstart history api and url monitoring
