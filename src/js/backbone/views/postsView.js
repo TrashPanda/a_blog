@@ -50,10 +50,13 @@ var PostsView = Backbone.View.extend({
     this.addOne(post);
   },
 
+  /*
   showUserPosts: function(username) {
     console.log(username);
-  },
+    var posts = this.collection.where({name: username});
 
+  },
+  */
 
   /*
   * components, which can be added on views
