@@ -17,15 +17,14 @@ var stringify   = require('stringify');             //enabling file requiring in
 //env settings
 var env = process.env.NODE_ENV || 'development';    //'development' mode if not stated
 
-//'sass' action to complie css file
+//'sass' to complie css file
 gulp.task('sass', function(){
   /*
   return gulp.src('./src/sass/main.scss')
     .pipe(sass({sourceComments: 'map'}))
     .pipe(gulp.dest('./public/stylesheets'));
   */
-
-  return gulp.src('./src/sass/custom-bootstrap.scss')
+  return gulp.src('/sass/custom-bootstrap.scss')
     .pipe(sass({sourceComments: 'map'}))
     .pipe(gulp.dest('./public/stylesheets'));
 
@@ -35,14 +34,8 @@ gulp.task('sass', function(){
 //'browserify' to compile clientside js
 gulp.task('js',function(){
     //configuration for the handlebar compiler
-    /*
-    hbsfy.configure({
-      extensions: ['hbs']                         //tell hbsfy that the handlebar template file extension is .hbs
-    });
-    */
 
-    return browserify('src/js/backbone/app.js', { debug:env === 'development' })
-    //this is for testing
+    return browserify('assets/js/app/app.js', { debug:env === 'development' })
     //return browserify('src/js/main.js', { debug:env === 'development' })
     .transform(stringify(['.hbs']))               //enabling  require('<filename>') functionalityin client side, best way yet
     .bundle()
@@ -55,9 +48,9 @@ gulp.task('js',function(){
 
 //watcher for src files change, and call action respectively
 gulp.task('watch',function(){
-  gulp.watch('src/sass/**/*.scss', ['sass']);
-  gulp.watch('src/js/**/*.js', ['js']);
-  gulp.watch('src/js/**/*.hbs', ['js']);
+  gulp.watch('./assets/stylesheets/sass/**/*.scss', ['sass']);
+  gulp.watch('assets/js/app/**/*.js', ['js']);
+  gulp.watch('assets/js/app/**/*.hbs', ['js']);
 });
 
 

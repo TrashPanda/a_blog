@@ -1,6 +1,13 @@
+v 0.4.1
+rearrange the assets, better source code and deployment code seperation
+the event dispatcher is abstracted as a separate global module, to orchestra the app
+
+
 V 0.4
 client side implemented with backbone
 
+
+
 v 0.3.1 db update
-* minor bug fixes
-* expand backend api
+minor bug fixes
+expand backend api

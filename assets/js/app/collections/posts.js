@@ -30,12 +30,12 @@ var Posts = Backbone.Collection.extend({
   model:  Post,
   url:    '/api/posts',
 
-  //state machine
+  //state
   state: {
     firstPage:     1,
     lastPage:     null,
     currentPage:  null,
-    pageSize:     5,            //number of posts per page. it can be set as a parameter of initialize function, but now let's just make it 6
+    pageSize:     4,            //number of posts per page. it can be set as a parameter of initialize function, but now let's just make it 6
     totalRecords: null,
     totalPages:   null,
     //currentPosts: null,
@@ -87,18 +87,14 @@ var Posts = Backbone.Collection.extend({
       this.state.next = page + 1;
     }
 
-    console.log(page, this.state);
+    //console.log(page, this.state);
     this.trigger('setPage');
   },
 
 
   //back to the office!
   homepageEvent:function(){
-    //if (this.state.currentPage !== 1) {
-      //console.log('collection lenght ' + this.length);
-    console.log('did this trigger?');
     this.setPageEvent(1);
-    //}
   },
 
   /*

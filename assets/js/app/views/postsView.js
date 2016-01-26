@@ -18,35 +18,42 @@ var CreateView      = require('../views/createView.js');        //post creation 
 // tagging and apending rendered collection is dealt at router
 var PostsView = Backbone.View.extend({
   el: '#backbone_app',                                            //top el is #backbone_app
+  _subviews: [],                                                  //manage all subviews
+
+
 
   initialize: function(){
-    this.listenTo(this.collection, 'setPage', this.index);       //listener to setPage event from posts collection
-    //this.listenTo(this.collection, 'create', this.create);        //listener to create event
+    this.listenTo(this.collection, 'setPage', this.index);        //listener to setPage event from posts collection
+    //this.listenTo(this.collection, 'create', this.create);      //listener to create event
   },
 
   /*
-  *views: these are the views, components might be added
+  *views: these are the top views, subview componenet are appended
   */
   //index(): clear the elemnts, render the posts, render pagination
   index: function() {
     console.log('index: makesure render once');
-    this.$el.html('');      //clear the previously rendered elements, otherwise the new elements will append after the old ones
-    this.addAll();          //render the posts
-    this.pagination();      //render pagination
+    this.removeContent();
+    this.addAll();              //render the posts
+    this.pagination();          //render pagination
   },
+
 
   //create new post
   create: function() {
     console.log('create: makesure render once');
-    this.$el.html('');                        //clear
+    this.removeContent();                        //clear
     var createView = new CreateView({collection: this.collection});
     this.$el.append(createView.render().el);
   },
 
+
+
+  //show the desired post, by id
   showOnePost: function(_id) {
     var post = this.collection.get(_id);
-    console.log(post);
-    this.$el.html('');
+    //console.log(post);
+    this.removeContent();
     this.addOne(post);
   },
 
@@ -65,6 +72,7 @@ var PostsView = Backbone.View.extend({
   addOne: function(post) {
     var postView = new PostView({model: post});         //instantiate postView with model data
     this.$el.append(postView.render().el);              //append a view, with rendered element
+    this._subviews.push(postView);                      //push the reference to the _subviews so that it can be manipulated later
   },
 
   //all posts from current page
@@ -78,8 +86,17 @@ var PostsView = Backbone.View.extend({
   pagination: function() {
     var pagination = new PaginationView({collection: this.collection});   //instantiate pagination component
     this.$el.append(pagination.render().el);                              //append pagination component
+    this._subviews.push(pagination);
   },
 
+
+
+  //utilities
+  //remove the views from the _subviews
+  removeContent: function() {
+    _.invoke(this._subviews, 'remove');       //invoke remove() on all the subviews
+    this._subviews.length = 0;
+  },
 
 
 });
